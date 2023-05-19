@@ -1,0 +1,91 @@
+<html>
+<head>
+    <meta name="viewport" content="user-scalable=0;"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <script src="https://web2-dev.idwise.app/idwise.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<button onclick="getJourneySummary()">Log Journey Summary to console</button>
+<br>
+<div id="idwise-mount"></div>
+
+<script>
+  let idwiseInstance;
+  const clientKey = "REPLACE_WITH_YOUR_CLIENT_KEY"; // REPLACE THIS
+  const journeyDefinitionId = "REPLACE_WITH_YOUR_JOUENRY_DEFINITION_ID"; // REPLACE THIS
+
+  IDWise.initialize({
+    clientKey: clientKey,
+  })
+    .then(idwise => {
+      idwiseInstance = idwise;  // assign idwise instance to a global variable
+
+      idwise.startJourney({
+        mount: "#idwise-mount",
+        journeyDefinitionId: journeyDefinitionId,
+        eventHandlers: {
+          onJourneyFinished: function () {
+            getJourneySummary(); // call getJourneySummary() to get the journey summary
+            alert("Thanks for completing the registration");
+          },
+        },
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+  function getJourneySummary() {
+    console.dir('Journey summary: ', idwiseInstance.getJourneySummary()); // call getJourneySummary() to get the journey summary
+    const passedStepIds = getStepIdsForPassedSteps();
+    console.dir('Passed stepIds: ', passedStepIds);
+    const passedSteps = getPassedSteps();
+    console.dir('Passed steps: ', passedSteps);
+    const failedSteps = getFailedSteps();
+    console.dir('Failed steps: ', failedSteps);
+  }
+
+  // This returns only passed step ids
+  function getStepIdsForPassedSteps() {
+    const summary = idwiseInstance.getJourneySummary();
+    let stepIds = [];
+    if(summary?.stepSummaries && summary.stepSummaries.length > 0) {
+      const passedSteps = summary.stepSummaries.filter(step => step.result?.hasPassedRules);
+        stepIds = passedSteps.map(step => step.definition.stepId);
+    }
+
+    return stepIds;
+  }
+
+  // This returns only passed steps
+  function getPassedSteps() {
+    const summary = idwiseInstance.getJourneySummary();
+    let passedSteps = [];
+    if(summary?.stepSummaries && summary.stepSummaries.length > 0) {
+      passedSteps = summary.stepSummaries.filter(step => step.result?.hasPassedRules);
+    }
+
+    return passedSteps;
+  }
+
+  // This will include unattempted steps as well
+  function getFailedSteps() {
+    const summary = idwiseInstance.getJourneySummary();
+    let failedSteps = [];
+    if(summary?.stepSummaries && summary.stepSummaries.length > 0) {
+      failedSteps = summary.stepSummaries.filter(step => !step.result?.hasPassedRules);
+    }
+
+    return failedSteps;
+  }
+</script>
+</body>
+</html>
