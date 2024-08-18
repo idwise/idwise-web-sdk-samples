@@ -1,23 +1,30 @@
 <html>
   <head>
     <meta name="viewport" content="user-scalable=0;" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
     <script src="https://releases.idwise.com/websdk/latest/idwise.min.js"></script>
-    <link href="https://releases.idwise.com/websdk/latest/idwise.min.css" rel="stylesheet" />
+    <link
+      href="https://releases.idwise.com/websdk/latest/idwise.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="idwise-mount"></div>
     <script>
       try {
         IDWise.initialize({
-          clientKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=",//replace xxxx with client key that you got from IDWise 
+          clientKey:
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=", //replace xxxx with client key that you got from IDWise
           locale: "en",
         })
           .then(idwise => {
             idwise.startJourney({
               mount: "#idwise-mount",
-              journeyDefinitionId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",// replace xxx with your jounrey definition id
-              referenceNo: "xxxxxxx",// is optional, pass your reference id if it is needed. 
+              journeyDefinitionId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", // replace xxx with your jounrey definition id
+              referenceNo: "xxxxxxx", // is optional, pass your reference id if it is needed.
               eventHandlers: {
                 onJourneyStarted: function (details) {
                   alert("Journey started, journey id =" + details.journeyId);
@@ -27,6 +34,9 @@
                 },
                 onJourneyCancelled: function (details) {
                   alert("Journey cancelled, journey id =" + details.journeyId);
+                },
+                onError: function (details) {
+                  alert("Error occured, journey id =" + details.journeyId);
                 },
               },
             });
